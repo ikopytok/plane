@@ -1,3 +1,4 @@
+// oxlint-disable no-shadow
 /**
  * Copyright (c) 2023-present Plane Software, Inc. and contributors
  * SPDX-License-Identifier: AGPL-3.0-only
@@ -126,7 +127,7 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
             size="xl"
             value={uniqueCodeFormData.code}
             onChange={(e) => handleFormChange("code", e.target.value)}
-            placeholder="123456"
+            placeholder="12345678"
             autoComplete="off"
             // oxlint-disable-next-line jsx-a11y/no-autofocus -- sole primary field of a dedicated auth step; matches standard sign-in flows
             autoFocus

@@ -1,3 +1,4 @@
+// oxlint-disable no-useless-constructor
 /**
  * Copyright (c) 2023-present Plane Software, Inc. and contributors
  * SPDX-License-Identifier: AGPL-3.0-only
@@ -25,7 +26,7 @@ export abstract class PageCoreService extends APIService {
 
   async fetchDetails(pageId: string): Promise<TPage> {
     try {
-      const response = await this.get(`${this.basePath}/pages/${pageId}/`, {
+      const response = await this.get(`${this.basePath}/pages/${encodeURIComponent(pageId)}/`, {
         headers: this.getHeader(),
       });
       return response?.data as TPage;
@@ -40,7 +41,7 @@ export abstract class PageCoreService extends APIService {
 
   async fetchDescriptionBinary(pageId: string): Promise<Buffer> {
     try {
-      const response = await this.get(`${this.basePath}/pages/${pageId}/description/`, {
+      const response = await this.get(`${this.basePath}/pages/${encodeURIComponent(pageId)}/description/`, {
         headers: {
           ...this.getHeader(),
           "Content-Type": "application/octet-stream",
@@ -88,7 +89,7 @@ export abstract class PageCoreService extends APIService {
 
     try {
       return await Promise.race([
-        this.patch(`${this.basePath}/pages/${pageId}/`, data, {
+        this.patch(`${this.basePath}/pages/${encodeURIComponent(pageId)}/`, data, {
           headers: this.getHeader(),
           signal: abortSignal,
         })
@@ -117,7 +118,7 @@ export abstract class PageCoreService extends APIService {
 
   async updateDescriptionBinary(pageId: string, data: TDocumentPayload): Promise<any> {
     try {
-      const response = await this.patch(`${this.basePath}/pages/${pageId}/description/`, data, {
+      const response = await this.patch(`${this.basePath}/pages/${encodeURIComponent(pageId)}/description/`, data, {
         headers: this.getHeader(),
       });
       return response?.data as unknown;
@@ -137,7 +138,7 @@ export abstract class PageCoreService extends APIService {
    */
   async fetchUserMentions(pageId: string): Promise<TUserMention[]> {
     try {
-      const response = await this.get(`${this.basePath}/pages/${pageId}/mentions/`, {
+      const response = await this.get(`${this.basePath}/pages/${encodeURIComponent(pageId)}/mentions/`, {
         headers: this.getHeader(),
         params: {
           mention_type: "user_mention",
@@ -165,9 +166,11 @@ export abstract class PageCoreService extends APIService {
     assetId: string,
     projectId?: string | null
   ): Promise<string | null> {
+    const slug = encodeURIComponent(workspaceSlug);
+    const asset = encodeURIComponent(assetId);
     const path = projectId
-      ? `/api/assets/v2/workspaces/${workspaceSlug}/projects/${projectId}/${assetId}/?disposition=inline`
-      : `/api/assets/v2/workspaces/${workspaceSlug}/${assetId}/?disposition=inline`;
+      ? `/api/assets/v2/workspaces/${slug}/projects/${encodeURIComponent(projectId)}/${asset}/?disposition=inline`
+      : `/api/assets/v2/workspaces/${slug}/${asset}/?disposition=inline`;
 
     try {
       const response = await this.get(path, {

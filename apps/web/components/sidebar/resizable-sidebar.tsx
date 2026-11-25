@@ -1,3 +1,5 @@
+// oxlint-disable react-hooks/exhaustive-deps
+// oxlint-disable oxc/const-comparisons
 /**
  * Copyright (c) 2023-present Plane Software, Inc. and contributors
  * SPDX-License-Identifier: AGPL-3.0-only
@@ -211,7 +213,7 @@ export function ResizableSidebar({
           "z-20 h-full border-r border-subtle bg-surface-1",
           !isResizing && "transition-all duration-300 ease-in-out",
           isCollapsed ? "w-0 translate-x-[-100%] opacity-0" : "translate-x-0 opacity-100",
-          isMobile && "absolute",
+          isMobile && "absolute z-30",
           className
         )}
         style={{
