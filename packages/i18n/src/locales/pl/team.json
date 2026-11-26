@@ -19,6 +19,7 @@
     "portfolio_required": "Należy wybrać portfel. Tylko administratorzy zespołów mogą tworzyć projekty.",
     "no_portfolios": "Nie ma jeszcze portfeli",
     "no_projects": "Brak projektów do wyświetlenia",
+    "portfolio_projects": "Projekty w {name}",
     "not_found": "Ta strona nie istnieje lub została usunięta.",
     "archived": "Zarchiwizowano",
     "archive_hint": "Zarchiwizowany zespół jest ukryty w nawigacji. Dostęp do jego projektów pozostaje.",

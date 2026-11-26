@@ -19,6 +19,7 @@
     "portfolio_required": "Select a portfolio. Only team admins can create projects.",
     "no_portfolios": "No portfolios yet",
     "no_projects": "No projects to show",
+    "portfolio_projects": "Projects in {name}",
     "not_found": "This page does not exist or was removed.",
     "archived": "Archived",
     "archive_hint": "An archived team is hidden from the navigation. Access to its projects stays.",

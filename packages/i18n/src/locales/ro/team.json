@@ -19,6 +19,7 @@
     "portfolio_required": "Selectați un portofoliu. Doar administratorii de echipă pot crea proiecte.",
     "no_portfolios": "Încă nu există portofolii",
     "no_projects": "Niciun proiect de afișat",
+    "portfolio_projects": "Proiecte din {name}",
     "not_found": "Această pagină nu există sau a fost eliminată.",
     "archived": "Arhivat",
     "archive_hint": "O echipă arhivată este ascunsă din navigare. Accesul la proiectele ei se păstrează.",

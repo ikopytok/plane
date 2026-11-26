@@ -19,6 +19,7 @@
     "portfolio_required": "请选择项目组合。只有团队管理员可以创建项目。",
     "no_portfolios": "暂无项目组合",
     "no_projects": "没有可显示的项目",
+    "portfolio_projects": "{name} 中的项目",
     "not_found": "此页面不存在或已被删除。",
     "archived": "已归档",
     "archive_hint": "已归档的团队不在导航中显示。对其项目的访问权限保留。",

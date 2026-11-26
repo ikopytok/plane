@@ -9,19 +9,26 @@ import type { ReactNode } from "react";
 import { observer } from "mobx-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Collapsible } from "@makeplane/propel/components/collapsible";
+import { Collapsible as BaseCollapsible } from "@base-ui/react/collapsible";
+import {
+  Collapsible,
+  CollapsibleHeader,
+  CollapsiblePanel,
+  CollapsiblePanelContent,
+  CollapsibleTriggerTrailing,
+} from "@makeplane/propel/components/collapsible";
 import { Icon } from "@makeplane/propel/components/icon";
 import { IconButton } from "@makeplane/propel/components/icon-button";
 import { ListItem, ListItemLabel, ListItemLink } from "@makeplane/propel/elements/list";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "@makeplane/propel/components/menu";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
-import { AddOutline, BoardOutline, MoreHorizontalOutline } from "@makeplane/propel/icons";
+import { AddOutline, BoardOutline, ChevronDownOutline, MoreHorizontalOutline } from "@makeplane/propel/icons";
 // plane imports
 import { Logo } from "@plane/blocks/emoji-icon-picker";
 import { setToast } from "@plane/blocks/toast";
 import { useTranslation } from "@plane/i18n";
 import type { TPortfolio, TProject, TTeam } from "@plane/types";
-import { copyUrlToClipboard } from "@plane/utils";
+import { cn, copyUrlToClipboard } from "@plane/utils";
 // components
 import { CreateProjectModal } from "@/components/project/create-project-modal";
 import { EntityFormDialog } from "@/components/teams/entity-form-dialog";
@@ -100,7 +107,10 @@ const PortfolioNode = observer(function PortfolioNode({ portfolio }: TPortfolioN
     `sidebar_portfolio_${portfolio.id}_open`,
     true
   );
+  const pathname = usePathname();
   const projects = getPortfolioProjects(portfolio.id);
+  const href = `/${workspaceSlug?.toString()}/portfolios/${portfolio.id}`;
+  const isCurrent = pathname.replace(/\/$/, "") === href;
 
   return (
     <>
@@ -112,30 +122,59 @@ const PortfolioNode = observer(function PortfolioNode({ portfolio }: TPortfolioN
           data={{ portfolio_id: portfolio.id }}
         />
       )}
-      <Collapsible
-        placement="sidebar"
-        open={!!isOpen}
-        onOpenChange={setIsOpen}
-        trigger={<span className="truncate text-body-xs-medium text-tertiary">{portfolio.name}</span>}
-        trailing={
-          <NodeMenu label={`${t("aria_labels.common.more_actions")}: ${portfolio.name}`}>
-            <MenuItem
-              label={t("common.overview")}
-              onClick={() => router.push(`/${workspaceSlug}/portfolios/${portfolio.id}`)}
-            />
-            {canManageTeam(portfolio.team) && (
-              <MenuItem label={t("create_project")} onClick={() => setIsCreateOpen(true)} />
+      {/* the name opens the portfolio page, the chevron alone shows and hides its projects */}
+      <BaseCollapsible.Root open={!!isOpen} onOpenChange={setIsOpen} className="w-full">
+        <CollapsibleHeader placement="sidebar">
+          <Link
+            href={href}
+            aria-current={isCurrent ? "page" : undefined}
+            className={cn(
+              "col-start-1 row-start-1 flex h-8 min-w-0 items-center truncate text-body-xs-medium text-tertiary hover:text-secondary",
+              isCurrent && "text-primary"
             )}
-          </NodeMenu>
-        }
-      >
-        <div className="flex w-full flex-col gap-px pl-2">
-          <TreeProjects projects={projects} />
-          {projects.length === 0 && (
-            <p className="px-2 py-1 text-caption-sm-regular text-placeholder">{t("team_structure.no_projects")}</p>
-          )}
-        </div>
-      </Collapsible>
+          >
+            <span className="truncate">{portfolio.name}</span>
+          </Link>
+          <CollapsibleTriggerTrailing placement="sidebar">
+            <NodeMenu label={`${t("aria_labels.common.more_actions")}: ${portfolio.name}`}>
+              <MenuItem label={t("common.overview")} onClick={() => router.push(href)} />
+              {canManageTeam(portfolio.team) && (
+                <MenuItem label={t("create_project")} onClick={() => setIsCreateOpen(true)} />
+              )}
+            </NodeMenu>
+          </CollapsibleTriggerTrailing>
+          <div className="col-start-3 row-start-1 flex items-center">
+            <BaseCollapsible.Trigger
+              render={
+                <IconButton
+                  variant="ghost"
+                  size="xs"
+                  icon={
+                    <Icon
+                      icon={
+                        <ChevronDownOutline
+                          className={cn("transition-transform duration-200", !isOpen && "-rotate-90")}
+                        />
+                      }
+                    />
+                  }
+                  aria-label={t("team_structure.portfolio_projects", { name: portfolio.name })}
+                />
+              }
+            />
+          </div>
+        </CollapsibleHeader>
+        <BaseCollapsible.Panel render={<CollapsiblePanel />}>
+          <CollapsiblePanelContent placement="sidebar">
+            <div className="flex w-full flex-col gap-px pl-2">
+              <TreeProjects projects={projects} />
+              {projects.length === 0 && (
+                <p className="px-2 py-1 text-caption-sm-regular text-placeholder">{t("team_structure.no_projects")}</p>
+              )}
+            </div>
+          </CollapsiblePanelContent>
+        </BaseCollapsible.Panel>
+      </BaseCollapsible.Root>
     </>
   );
 });
