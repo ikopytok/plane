@@ -5,6 +5,7 @@
  */
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { draggable, dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";
@@ -68,6 +69,8 @@ type Props = {
   disableDrop?: boolean;
   isLastChild: boolean;
   renderInExtendedSidebar?: boolean;
+  /** Extra control at the end of the row, after the menu, e.g. the toggle of the project's products. */
+  trailing?: ReactNode;
 };
 
 export const SidebarProjectsListItem = observer(function SidebarProjectsListItem(props: Props) {
@@ -80,6 +83,7 @@ export const SidebarProjectsListItem = observer(function SidebarProjectsListItem
     handleOnProjectDrop,
     projectListType,
     renderInExtendedSidebar = false,
+    trailing,
   } = props;
   // store hooks
   const { t } = useTranslation();
@@ -455,6 +459,7 @@ export const SidebarProjectsListItem = observer(function SidebarProjectsListItem
                     />
                   </span>
                 )}
+                {trailing}
               </div>
             </>
           </ListItem>

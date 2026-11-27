@@ -217,6 +217,7 @@ export interface IProjectUserPropertiesResponse extends IIssueFiltersResponse {
 export interface IWorkspaceUserPropertiesResponse extends IIssueFiltersResponse {
   navigation_project_limit?: number;
   navigation_control_preference?: "ACCORDION" | "TABBED";
+  navigation_show_products?: boolean;
   // Note: show_limited_projects is derived from navigation_project_limit (0 = false, >0 = true)
 }
 

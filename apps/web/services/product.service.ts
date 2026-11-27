@@ -37,7 +37,10 @@ export class ProductService extends APIService {
     return data(this.delete(`/api/workspaces/${workspaceSlug}/product-types/${id}/`));
   }
 
-  list(workspaceSlug: string, params: { team_id?: string; portfolio_id?: string }): Promise<TProductListItem[]> {
+  list(
+    workspaceSlug: string,
+    params: { team_id?: string; portfolio_id?: string; project_id?: string }
+  ): Promise<TProductListItem[]> {
     return data(this.get(`/api/workspaces/${workspaceSlug}/products/`, { params }));
   }
 }

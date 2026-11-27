@@ -129,6 +129,7 @@ export const useProjectNavigationPreferences = () => {
         navigationMode: storePreferences.navigation_control_preference || DEFAULT_PROJECT_PREFERENCES.navigationMode,
         limitedProjectsCount: limit > 0 ? limit : DEFAULT_PROJECT_PREFERENCES.limitedProjectsCount,
         showLimitedProjects: limit > 0, // Derived: 0 = false, >0 = true
+        showProducts: storePreferences.navigation_show_products ?? DEFAULT_PROJECT_PREFERENCES.showProducts,
       };
     }
 
@@ -175,11 +176,24 @@ export const useProjectNavigationPreferences = () => {
     [workspaceSlug, updateProjectNavigationPreferences]
   );
 
+  // Update showing products under projects in the teams tree
+  const updateShowProducts = useCallback(
+    async (show: boolean) => {
+      if (!workspaceSlug) return;
+
+      await updateProjectNavigationPreferences(workspaceSlug.toString(), {
+        navigation_show_products: show,
+      });
+    },
+    [workspaceSlug, updateProjectNavigationPreferences]
+  );
+
   return {
     preferences,
     updateNavigationMode,
     updateShowLimitedProjects,
     updateLimitedProjectsCount,
+    updateShowProducts,
   };
 };
 

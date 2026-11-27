@@ -20,6 +20,7 @@
     "no_portfolios": "Henüz portföy yok",
     "no_projects": "Gösterilecek proje yok",
     "portfolio_projects": "{name} projeleri",
+    "project_products": "{name} ürünleri",
     "not_found": "Bu sayfa yok veya kaldırılmış.",
     "archived": "Arşivlendi",
     "archive_hint": "Arşivlenen ekip gezinmede gizlenir. Projelerine erişim korunur.",

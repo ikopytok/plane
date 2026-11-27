@@ -46,6 +46,7 @@ import {
   useProjectNavigationPreferences,
   useWorkspaceNavigationPreferences,
 } from "@/hooks/use-navigation-preferences";
+import { useTeam } from "@/hooks/store/use-team";
 // types
 import type { TPersonalNavigationItemKey } from "@plane/types";
 
@@ -126,7 +127,9 @@ export const CustomizeNavigationDialog = observer(function CustomizeNavigationDi
     updateNavigationMode,
     updateShowLimitedProjects,
     updateLimitedProjectsCount,
+    updateShowProducts,
   } = useProjectNavigationPreferences();
+  const { isEnabled: isTeamStructureEnabled } = useTeam();
   const {
     preferences: workspacePreferences,
     toggleWorkspaceItem,
@@ -395,6 +398,16 @@ export const CustomizeNavigationDialog = observer(function CustomizeNavigationDi
                       </div>
                     )}
                   </div>
+
+                  {/* products are shown only in the teams tree */}
+                  {isTeamStructureEnabled && (
+                    <CheckboxField
+                      size="md"
+                      label={t("show_products_on_sidebar")}
+                      checked={projectPreferences.showProducts}
+                      onCheckedChange={(checked) => void updateShowProducts(checked)}
+                    />
+                  )}
                 </div>
               </NavigationSection>
             </div>

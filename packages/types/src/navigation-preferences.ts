@@ -33,6 +33,8 @@ export interface TProjectNavigationPreferences {
   navigationMode: TProjectNavigationMode;
   showLimitedProjects: boolean;
   limitedProjectsCount: number;
+  /** Show each project's products under it in the sidebar teams tree. */
+  showProducts: boolean;
 }
 
 export interface TWorkspaceNavigationItemState {
@@ -62,6 +64,7 @@ export const DEFAULT_PROJECT_PREFERENCES: TProjectNavigationPreferences = {
   navigationMode: "ACCORDION",
   showLimitedProjects: false,
   limitedProjectsCount: 10,
+  showProducts: false,
 };
 
 export const DEFAULT_WORKSPACE_PREFERENCES: TWorkspaceNavigationPreferences = {

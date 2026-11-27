@@ -845,6 +845,7 @@
   "accordion_navigation_control": "아코디언 사이드바 내비게이션",
   "horizontal_navigation_bar": "탭 내비게이션",
   "show_limited_projects_on_sidebar": "사이드바에 제한된 프로젝트 표시",
+  "show_products_on_sidebar": "프로젝트 아래에 제품 표시",
   "enter_number_of_projects": "프로젝트 수 입력",
   "pin": "고정",
   "unpin": "고정 해제",

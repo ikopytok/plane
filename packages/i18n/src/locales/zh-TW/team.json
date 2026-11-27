@@ -20,6 +20,7 @@
     "no_portfolios": "尚無專案組合",
     "no_projects": "沒有可顯示的專案",
     "portfolio_projects": "{name} 中的專案",
+    "project_products": "{name} 中的產品",
     "not_found": "此頁面不存在或已被移除。",
     "archived": "已封存",
     "archive_hint": "已封存的團隊不會顯示在導覽中。對其專案的存取權限保留。",

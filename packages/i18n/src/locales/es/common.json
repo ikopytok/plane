@@ -845,6 +845,7 @@
   "accordion_navigation_control": "Navegación lateral tipo acordeón",
   "horizontal_navigation_bar": "Navegación por pestañas",
   "show_limited_projects_on_sidebar": "Mostrar proyectos limitados en la barra lateral",
+  "show_products_on_sidebar": "Mostrar productos debajo de los proyectos",
   "enter_number_of_projects": "Ingresa el número de proyectos",
   "pin": "Fijar",
   "unpin": "Desfijar",

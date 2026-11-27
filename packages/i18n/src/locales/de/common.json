@@ -845,6 +845,7 @@
   "accordion_navigation_control": "Akkordeon-Seitenleistennavigation",
   "horizontal_navigation_bar": "Tab-Navigation",
   "show_limited_projects_on_sidebar": "Begrenzte Anzahl von Projekten in der Seitenleiste anzeigen",
+  "show_products_on_sidebar": "Produkte unter Projekten anzeigen",
   "enter_number_of_projects": "Anzahl der Projekte eingeben",
   "pin": "Anheften",
   "unpin": "Lösen",
