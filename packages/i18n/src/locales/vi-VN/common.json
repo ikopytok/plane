@@ -845,6 +845,7 @@
   "accordion_navigation_control": "Điều hướng thanh bên kiểu accordion",
   "horizontal_navigation_bar": "Điều hướng dạng tab",
   "show_limited_projects_on_sidebar": "Hiển thị số dự án giới hạn trên thanh bên",
+  "show_products_on_sidebar": "Hiển thị sản phẩm bên dưới dự án",
   "enter_number_of_projects": "Nhập số lượng dự án",
   "pin": "Ghim",
   "unpin": "Bỏ ghim",

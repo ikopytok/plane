@@ -20,6 +20,7 @@
     "no_portfolios": "Zatiaľ žiadne portfóliá",
     "no_projects": "Žiadne projekty na zobrazenie",
     "portfolio_projects": "Projekty v {name}",
+    "project_products": "Produkty v {name}",
     "not_found": "Táto stránka neexistuje alebo bola odstránená.",
     "archived": "Archivované",
     "archive_hint": "Archivovaný tím je v navigácii skrytý. Prístup k jeho projektom zostáva.",

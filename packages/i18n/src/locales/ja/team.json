@@ -20,6 +20,7 @@
     "no_portfolios": "ポートフォリオはまだありません",
     "no_projects": "表示するプロジェクトがありません",
     "portfolio_projects": "{name} のプロジェクト",
+    "project_products": "{name} のプロダクト",
     "not_found": "このページは存在しないか、削除されました。",
     "archived": "アーカイブ済み",
     "archive_hint": "アーカイブしたチームはナビゲーションに表示されません。プロジェクトへのアクセス権は維持されます。",

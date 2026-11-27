@@ -20,6 +20,7 @@
     "no_portfolios": "아직 포트폴리오가 없습니다",
     "no_projects": "표시할 프로젝트가 없습니다",
     "portfolio_projects": "{name}의 프로젝트",
+    "project_products": "{name}의 제품",
     "not_found": "이 페이지는 존재하지 않거나 삭제되었습니다.",
     "archived": "보관됨",
     "archive_hint": "보관된 팀은 내비게이션에서 숨겨집니다. 프로젝트 액세스는 유지됩니다.",

@@ -20,6 +20,7 @@
     "no_portfolios": "Nog geen portfolio's",
     "no_projects": "Geen projecten om te tonen",
     "portfolio_projects": "Projecten in {name}",
+    "project_products": "Producten in {name}",
     "not_found": "Deze pagina bestaat niet of is verwijderd.",
     "archived": "Gearchiveerd",
     "archive_hint": "Een gearchiveerd team is verborgen in de navigatie. De toegang tot de projecten blijft behouden.",

@@ -845,6 +845,7 @@
   "accordion_navigation_control": "手風琴側邊欄導覽",
   "horizontal_navigation_bar": "分頁式導覽",
   "show_limited_projects_on_sidebar": "在側邊欄顯示限定數量的專案",
+  "show_products_on_sidebar": "在專案下顯示產品",
   "enter_number_of_projects": "輸入專案數量",
   "pin": "釘選",
   "unpin": "取消釘選",

@@ -36,8 +36,42 @@ import { useTeamAction } from "@/components/teams/use-team-action";
 // hooks
 import { useTeam } from "@/hooks/store/use-team";
 import useLocalStorage from "@/hooks/use-local-storage";
+import { useProjectNavigationPreferences } from "@/hooks/use-navigation-preferences";
 // local imports
+import { ProjectProducts, ProjectProductsToggle } from "./project-products";
 import { SidebarProjectsListItem } from "./projects-list-item";
+
+type TProjectRowProps = { project: TProject; isLastChild: boolean; onCopyLink: () => void };
+
+/** A joined project in the tree; with the "show products" preference it also gets a toggle for its products. */
+const TreeProjectRow = observer(function TreeProjectRow({ project, isLastChild, onCopyLink }: TProjectRowProps) {
+  const {
+    preferences: { showProducts },
+  } = useProjectNavigationPreferences();
+  const { storedValue: isOpen, setValue: setIsOpen } = useLocalStorage<boolean>(
+    `sidebar_project_${project.id}_products_open`,
+    false
+  );
+
+  return (
+    <>
+      <SidebarProjectsListItem
+        projectId={project.id}
+        handleCopyText={onCopyLink}
+        projectListType="JOINED"
+        disableDrag
+        disableDrop
+        isLastChild={isLastChild}
+        trailing={
+          showProducts ? (
+            <ProjectProductsToggle projectName={project.name} isOpen={!!isOpen} onToggle={() => setIsOpen(!isOpen)} />
+          ) : undefined
+        }
+      />
+      {showProducts && isOpen && <ProjectProducts projectId={project.id} />}
+    </>
+  );
+});
 
 type TProjectsProps = { projects: TProject[] };
 
@@ -55,14 +89,11 @@ const TreeProjects = observer(function TreeProjects({ projects }: TProjectsProps
     <>
       {projects.map((project, index) =>
         project.member_role ? (
-          <SidebarProjectsListItem
+          <TreeProjectRow
             key={project.id}
-            projectId={project.id}
-            handleCopyText={() => handleCopyText(project.id)}
-            projectListType="JOINED"
-            disableDrag
-            disableDrop
+            project={project}
             isLastChild={index === projects.length - 1}
+            onCopyLink={() => handleCopyText(project.id)}
           />
         ) : (
           <ListItem key={project.id} density="comfortable">
@@ -122,11 +153,12 @@ const PortfolioNode = observer(function PortfolioNode({ portfolio }: TPortfolioN
           data={{ portfolio_id: portfolio.id }}
         />
       )}
-      {/* the name opens the portfolio page, the chevron alone shows and hides its projects */}
+      {/* the name opens the portfolio page and shows its projects; the chevron alone shows and hides them */}
       <BaseCollapsible.Root open={!!isOpen} onOpenChange={setIsOpen} className="w-full">
         <CollapsibleHeader placement="sidebar">
           <Link
             href={href}
+            onClick={() => setIsOpen(true)}
             aria-current={isCurrent ? "page" : undefined}
             className={cn(
               "col-start-1 row-start-1 flex h-8 min-w-0 items-center truncate text-body-xs-medium text-tertiary hover:text-secondary",

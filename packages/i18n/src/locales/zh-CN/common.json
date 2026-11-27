@@ -845,6 +845,7 @@
   "accordion_navigation_control": "折叠侧边栏导航",
   "horizontal_navigation_bar": "标签式导航",
   "show_limited_projects_on_sidebar": "在侧边栏显示有限数量的项目",
+  "show_products_on_sidebar": "在项目下显示产品",
   "enter_number_of_projects": "输入项目数量",
   "pin": "置顶",
   "unpin": "取消置顶",

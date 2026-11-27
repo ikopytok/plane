@@ -845,6 +845,7 @@
   "accordion_navigation_control": "アコーディオン形式のサイドバーナビゲーション",
   "horizontal_navigation_bar": "タブ形式のナビゲーション",
   "show_limited_projects_on_sidebar": "サイドバーに表示するプロジェクトを制限",
+  "show_products_on_sidebar": "プロジェクトの下にプロダクトを表示",
   "enter_number_of_projects": "プロジェクト数を入力",
   "pin": "ピン留め",
   "unpin": "ピン留めを解除",

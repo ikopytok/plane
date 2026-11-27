@@ -374,6 +374,8 @@ class WorkspaceUserProperties(BaseModel):
         choices=NavigationControlPreference.choices,
         default=NavigationControlPreference.ACCORDION,
     )
+    # show the products of each project in the sidebar teams tree
+    navigation_show_products = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ["workspace", "user", "deleted_at"]

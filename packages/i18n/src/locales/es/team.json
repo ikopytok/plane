@@ -20,6 +20,7 @@
     "no_portfolios": "Aún no hay portafolios",
     "no_projects": "No hay proyectos para mostrar",
     "portfolio_projects": "Proyectos de {name}",
+    "project_products": "Productos de {name}",
     "not_found": "Esta página no existe o se eliminó.",
     "archived": "Archivado",
     "archive_hint": "Un equipo archivado se oculta de la navegación. El acceso a sus proyectos se conserva.",
