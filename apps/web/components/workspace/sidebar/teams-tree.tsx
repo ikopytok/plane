@@ -7,7 +7,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { observer } from "mobx-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Collapsible as BaseCollapsible } from "@base-ui/react/collapsible";
 import {
@@ -40,11 +40,23 @@ import { useProjectNavigationPreferences } from "@/hooks/use-navigation-preferen
 // local imports
 import { ProjectProducts, ProjectProductsToggle } from "./project-products";
 import { SidebarProjectsListItem } from "./projects-list-item";
+import type { TTreeSelection } from "./tree-selection";
+import { TreeSelectionProvider, treeLevelClass, useTreeSelection } from "./tree-selection";
 
-type TProjectRowProps = { project: TProject; isLastChild: boolean; onCopyLink: () => void };
+/** The ancestors of a tree node: its team and portfolio, when it has them. */
+type TTreeParent = Pick<TTreeSelection, "teamId" | "portfolioId">;
+
+type TProjectRowProps = { project: TProject; parent: TTreeParent; isLastChild: boolean; onCopyLink: () => void };
 
 /** A joined project in the tree; with the "show products" preference it also gets a toggle for its products. */
-const TreeProjectRow = observer(function TreeProjectRow({ project, isLastChild, onCopyLink }: TProjectRowProps) {
+const TreeProjectRow = observer(function TreeProjectRow({
+  project,
+  parent,
+  isLastChild,
+  onCopyLink,
+}: TProjectRowProps) {
+  const { workspaceSlug } = useParams();
+  const { select, isInChain, isLast } = useTreeSelection();
   const {
     preferences: { showProducts },
   } = useProjectNavigationPreferences();
@@ -62,22 +74,33 @@ const TreeProjectRow = observer(function TreeProjectRow({ project, isLastChild, 
         disableDrag
         disableDrop
         isLastChild={isLastChild}
+        isCurrent={isLast("project", project.id)}
+        labelClassName={treeLevelClass("project", isInChain("project", project.id))}
+        onSelect={() =>
+          select({
+            ...parent,
+            projectId: project.id,
+            href: `/${workspaceSlug}/projects/${project.id}/`,
+            isPrefix: true,
+          })
+        }
         trailing={
           showProducts ? (
             <ProjectProductsToggle projectName={project.name} isOpen={!!isOpen} onToggle={() => setIsOpen(!isOpen)} />
           ) : undefined
         }
       />
-      {showProducts && isOpen && <ProjectProducts projectId={project.id} />}
+      {showProducts && isOpen && <ProjectProducts projectId={project.id} parent={parent} />}
     </>
   );
 });
 
-type TProjectsProps = { projects: TProject[] };
+type TProjectsProps = { projects: TProject[]; parent: TTreeParent };
 
-const TreeProjects = observer(function TreeProjects({ projects }: TProjectsProps) {
+const TreeProjects = observer(function TreeProjects({ projects, parent }: TProjectsProps) {
   const { workspaceSlug } = useParams();
   const { t } = useTranslation();
+  const { select, isInChain, isLast } = useTreeSelection();
 
   const handleCopyText = (projectId: string) => {
     void copyUrlToClipboard(`${workspaceSlug}/projects/${projectId}/issues`).then(() =>
@@ -92,14 +115,32 @@ const TreeProjects = observer(function TreeProjects({ projects }: TProjectsProps
           <TreeProjectRow
             key={project.id}
             project={project}
+            parent={parent}
             isLastChild={index === projects.length - 1}
             onCopyLink={() => handleCopyText(project.id)}
           />
         ) : (
           <ListItem key={project.id} density="comfortable">
-            <ListItemLink render={<Link href={`/${workspaceSlug}/projects/${project.id}/issues`} />}>
+            <ListItemLink
+              render={
+                <Link
+                  href={`/${workspaceSlug}/projects/${project.id}/issues`}
+                  onClick={() =>
+                    select({
+                      ...parent,
+                      projectId: project.id,
+                      href: `/${workspaceSlug}/projects/${project.id}/`,
+                      isPrefix: true,
+                    })
+                  }
+                />
+              }
+              aria-current={isLast("project", project.id) ? "page" : undefined}
+            >
               <Logo logo={project.logo_props} size={16} />
-              <ListItemLabel>{project.name}</ListItemLabel>
+              <ListItemLabel render={<span className={treeLevelClass("project", isInChain("project", project.id))} />}>
+                {project.name}
+              </ListItemLabel>
             </ListItemLink>
           </ListItem>
         )
@@ -138,10 +179,12 @@ const PortfolioNode = observer(function PortfolioNode({ portfolio }: TPortfolioN
     `sidebar_portfolio_${portfolio.id}_open`,
     true
   );
-  const pathname = usePathname();
+  const { select, isInChain, isLast } = useTreeSelection();
   const projects = getPortfolioProjects(portfolio.id);
   const href = `/${workspaceSlug?.toString()}/portfolios/${portfolio.id}`;
-  const isCurrent = pathname.replace(/\/$/, "") === href;
+  const parent: TTreeParent = { teamId: portfolio.team, portfolioId: portfolio.id };
+  const isCurrent = isLast("portfolio", portfolio.id);
+  const handleSelect = () => select({ ...parent, href });
 
   return (
     <>
@@ -155,21 +198,33 @@ const PortfolioNode = observer(function PortfolioNode({ portfolio }: TPortfolioN
       )}
       {/* the name opens the portfolio page and shows its projects; the chevron alone shows and hides them */}
       <BaseCollapsible.Root open={!!isOpen} onOpenChange={setIsOpen} className="w-full">
-        <CollapsibleHeader placement="sidebar">
+        <CollapsibleHeader
+          placement="sidebar"
+          render={<div className={cn(isCurrent && "bg-layer-transparent-selected")} />}
+        >
           <Link
             href={href}
-            onClick={() => setIsOpen(true)}
+            onClick={() => {
+              setIsOpen(true);
+              handleSelect();
+            }}
             aria-current={isCurrent ? "page" : undefined}
             className={cn(
-              "col-start-1 row-start-1 flex h-8 min-w-0 items-center truncate text-body-xs-medium text-tertiary hover:text-secondary",
-              isCurrent && "text-primary"
+              "col-start-1 row-start-1 flex h-8 min-w-0 items-center truncate",
+              treeLevelClass("portfolio", isInChain("portfolio", portfolio.id))
             )}
           >
             <span className="truncate">{portfolio.name}</span>
           </Link>
           <CollapsibleTriggerTrailing placement="sidebar">
             <NodeMenu label={`${t("aria_labels.common.more_actions")}: ${portfolio.name}`}>
-              <MenuItem label={t("common.overview")} onClick={() => router.push(href)} />
+              <MenuItem
+                label={t("common.overview")}
+                onClick={() => {
+                  handleSelect();
+                  router.push(href);
+                }}
+              />
               {canManageTeam(portfolio.team) && (
                 <MenuItem label={t("create_project")} onClick={() => setIsCreateOpen(true)} />
               )}
@@ -199,7 +254,7 @@ const PortfolioNode = observer(function PortfolioNode({ portfolio }: TPortfolioN
         <BaseCollapsible.Panel render={<CollapsiblePanel />}>
           <CollapsiblePanelContent placement="sidebar">
             <div className="flex w-full flex-col gap-px pl-2">
-              <TreeProjects projects={projects} />
+              <TreeProjects projects={projects} parent={parent} />
               {projects.length === 0 && (
                 <p className="px-2 py-1 text-caption-sm-regular text-placeholder">{t("team_structure.no_projects")}</p>
               )}
@@ -211,21 +266,25 @@ const PortfolioNode = observer(function PortfolioNode({ portfolio }: TPortfolioN
   );
 });
 
-const BoardLink = observer(function BoardLink() {
+type TBoardLinkProps = { teamId?: string };
+
+const BoardLink = observer(function BoardLink({ teamId }: TBoardLinkProps) {
   const { workspaceSlug } = useParams();
-  const pathname = usePathname();
   const { t } = useTranslation();
+  const { select, isInChain, isLast } = useTreeSelection();
   const href = `/${workspaceSlug?.toString()}/product-board`;
 
   return (
     <ListItem density="comfortable">
       <ListItemLink
         href={href}
-        render={<Link href={href} />}
-        aria-current={pathname.replace(/\/$/, "") === href ? "page" : undefined}
+        render={<Link href={href} onClick={() => select({ teamId, board: true, href })} />}
+        aria-current={isLast("board") ? "page" : undefined}
       >
         <BoardOutline className="size-4 shrink-0" />
-        <ListItemLabel>{t("product_board.title")}</ListItemLabel>
+        <ListItemLabel render={<span className={treeLevelClass("portfolio", isInChain("board"))} />}>
+          {t("product_board.title")}
+        </ListItemLabel>
       </ListItemLink>
     </ListItem>
   );
@@ -246,6 +305,8 @@ const TeamNode = observer(function TeamNode({ team }: TTeamNodeProps) {
     !!team.member_role
   );
   const portfolios = getTeamPortfolios(team.id, false);
+  const { select, isInChain, isLast } = useTreeSelection();
+  const teamHref = `/${workspaceSlug}/teams/${team.id}`;
 
   return (
     <>
@@ -260,10 +321,18 @@ const TeamNode = observer(function TeamNode({ team }: TTeamNodeProps) {
         placement="sidebar"
         open={!!isOpen}
         onOpenChange={setIsOpen}
-        trigger={<span className="truncate text-body-xs-semibold text-secondary">{team.name}</span>}
+        // the header is the root's first child: it gets the selected background when the team page was opened here
+        render={<div className={cn(isLast("team", team.id) && "[&>:first-child]:bg-layer-transparent-selected")} />}
+        trigger={<span className={`truncate ${treeLevelClass("team", isInChain("team", team.id))}`}>{team.name}</span>}
         trailing={
           <NodeMenu label={`${t("aria_labels.common.more_actions")}: ${team.name}`}>
-            <MenuItem label={t("common.overview")} onClick={() => router.push(`/${workspaceSlug}/teams/${team.id}`)} />
+            <MenuItem
+              label={t("common.overview")}
+              onClick={() => {
+                select({ teamId: team.id, href: teamHref });
+                router.push(teamHref);
+              }}
+            />
             {team.kind === "management" && canSeeProductBoard && (
               <MenuItem
                 label={t("product_board.title")}
@@ -277,7 +346,7 @@ const TeamNode = observer(function TeamNode({ team }: TTeamNodeProps) {
         }
       >
         <div className="flex w-full flex-col gap-px pl-2">
-          {team.kind === "management" && canSeeProductBoard && <BoardLink />}
+          {team.kind === "management" && canSeeProductBoard && <BoardLink teamId={team.id} />}
           {portfolios.map((portfolio) => (
             <PortfolioNode key={portfolio.id} portfolio={portfolio} />
           ))}
@@ -299,41 +368,43 @@ export const SidebarTeamsTree = observer(function SidebarTeamsTree() {
   const ownUnassigned = unassignedProjects.filter((project) => !!project.member_role);
 
   return (
-    <div className="flex flex-col gap-1">
-      {workspaceSlug && (
-        <CreateProjectModal
-          isOpen={isCreateOpen}
-          onClose={() => setIsCreateOpen(false)}
-          setToFavorite={false}
-          workspaceSlug={workspaceSlug.toString()}
-        />
-      )}
-      {/* admins see the board before there is a management team to show it in */}
-      {canSeeProductBoard && !activeTeams.some((team) => team.kind === "management") && <BoardLink />}
-      <div className="flex items-center justify-between px-2 py-1">
-        <span className="text-body-xs-semibold text-tertiary">{t("team_structure.teams")}</span>
-        {canCreateProject && (
-          <Tooltip label={t("create_project")}>
-            <IconButton
-              variant="ghost"
-              size="xs"
-              showTooltip={false}
-              icon={<Icon icon={AddOutline} />}
-              onClick={() => setIsCreateOpen(true)}
-              aria-label={t("aria_labels.projects_sidebar.create_new_project")}
-            />
-          </Tooltip>
+    <TreeSelectionProvider>
+      <div className="flex flex-col gap-1">
+        {workspaceSlug && (
+          <CreateProjectModal
+            isOpen={isCreateOpen}
+            onClose={() => setIsCreateOpen(false)}
+            setToFavorite={false}
+            workspaceSlug={workspaceSlug.toString()}
+          />
+        )}
+        {/* admins see the board before there is a management team to show it in */}
+        {canSeeProductBoard && !activeTeams.some((team) => team.kind === "management") && <BoardLink />}
+        <div className="flex items-center justify-between px-2 py-1">
+          <span className={treeLevelClass("root", true)}>{t("team_structure.teams")}</span>
+          {canCreateProject && (
+            <Tooltip label={t("create_project")}>
+              <IconButton
+                variant="ghost"
+                size="xs"
+                showTooltip={false}
+                icon={<Icon icon={AddOutline} />}
+                onClick={() => setIsCreateOpen(true)}
+                aria-label={t("aria_labels.projects_sidebar.create_new_project")}
+              />
+            </Tooltip>
+          )}
+        </div>
+        {activeTeams.map((team) => (
+          <TeamNode key={team.id} team={team} />
+        ))}
+        {ownUnassigned.length > 0 && (
+          <div className="pt-2">
+            <p className="px-2 py-1 text-body-xs-semibold text-tertiary">{t("team_structure.without_portfolio")}</p>
+            <TreeProjects projects={ownUnassigned} parent={{}} />
+          </div>
         )}
       </div>
-      {activeTeams.map((team) => (
-        <TeamNode key={team.id} team={team} />
-      ))}
-      {ownUnassigned.length > 0 && (
-        <div className="pt-2">
-          <p className="px-2 py-1 text-body-xs-semibold text-tertiary">{t("team_structure.without_portfolio")}</p>
-          <TreeProjects projects={ownUnassigned} />
-        </div>
-      )}
-    </div>
+    </TreeSelectionProvider>
   );
 });

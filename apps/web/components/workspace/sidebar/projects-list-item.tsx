@@ -71,6 +71,12 @@ type Props = {
   renderInExtendedSidebar?: boolean;
   /** Extra control at the end of the row, after the menu, e.g. the toggle of the project's products. */
   trailing?: ReactNode;
+  /** Overrides the URL-based highlight, e.g. in the teams tree, which highlights only what was clicked in it. */
+  isCurrent?: boolean;
+  /** Text style of the project name. */
+  labelClassName?: string;
+  /** Called when the project row is clicked. */
+  onSelect?: () => void;
 };
 
 export const SidebarProjectsListItem = observer(function SidebarProjectsListItem(props: Props) {
@@ -84,6 +90,9 @@ export const SidebarProjectsListItem = observer(function SidebarProjectsListItem
     projectListType,
     renderInExtendedSidebar = false,
     trailing,
+    isCurrent,
+    labelClassName,
+    onSelect,
   } = props;
   // store hooks
   const { t } = useTranslation();
@@ -286,6 +295,7 @@ export const SidebarProjectsListItem = observer(function SidebarProjectsListItem
   const isAccordionMode = projectPreferences.navigationMode === "ACCORDION";
 
   const handleItemClick = () => {
+    onSelect?.();
     if (projectPreferences.navigationMode === "ACCORDION") {
       setIsProjectListOpen(!isProjectListOpen);
     } else {
@@ -297,7 +307,8 @@ export const SidebarProjectsListItem = observer(function SidebarProjectsListItem
     }
   };
 
-  const shouldHighlightProject = URLProjectId === project?.id && projectPreferences.navigationMode !== "ACCORDION";
+  const shouldHighlightProject =
+    isCurrent ?? (URLProjectId === project?.id && projectPreferences.navigationMode !== "ACCORDION");
 
   return (
     <>
@@ -369,7 +380,7 @@ export const SidebarProjectsListItem = observer(function SidebarProjectsListItem
                 aria-expanded={isAccordionMode ? isProjectListOpen : undefined}
               >
                 <Logo logo={project.logo_props} size={16} />
-                <ListItemLabel>{project.name}</ListItemLabel>
+                <ListItemLabel render={<span className={labelClassName} />}>{project.name}</ListItemLabel>
               </ListItemLink>
               <div className="flex items-center gap-1">
                 <div
