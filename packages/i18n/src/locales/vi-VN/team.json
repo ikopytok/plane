@@ -19,6 +19,7 @@
     "portfolio_required": "Hãy chọn danh mục. Chỉ quản trị viên nhóm có thể tạo dự án.",
     "no_portfolios": "Chưa có danh mục nào",
     "no_projects": "Không có dự án để hiển thị",
+    "portfolio_projects": "Dự án trong {name}",
     "not_found": "Trang này không tồn tại hoặc đã bị xóa.",
     "archived": "Đã lưu trữ",
     "archive_hint": "Nhóm đã lưu trữ bị ẩn khỏi thanh điều hướng. Quyền truy cập dự án của nhóm vẫn được giữ.",

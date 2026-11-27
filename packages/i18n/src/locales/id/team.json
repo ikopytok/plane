@@ -19,6 +19,7 @@
     "portfolio_required": "Pilih portofolio. Hanya admin tim yang dapat membuat proyek.",
     "no_portfolios": "Belum ada portofolio",
     "no_projects": "Tidak ada proyek untuk ditampilkan",
+    "portfolio_projects": "Proyek di {name}",
     "not_found": "Halaman ini tidak ada atau telah dihapus.",
     "archived": "Diarsipkan",
     "archive_hint": "Tim yang diarsipkan disembunyikan dari navigasi. Akses ke proyeknya tetap ada.",

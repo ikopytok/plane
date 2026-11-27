@@ -19,6 +19,7 @@
     "portfolio_required": "Bir portföy seçin. Yalnızca ekip yöneticileri proje oluşturabilir.",
     "no_portfolios": "Henüz portföy yok",
     "no_projects": "Gösterilecek proje yok",
+    "portfolio_projects": "{name} projeleri",
     "not_found": "Bu sayfa yok veya kaldırılmış.",
     "archived": "Arşivlendi",
     "archive_hint": "Arşivlenen ekip gezinmede gizlenir. Projelerine erişim korunur.",

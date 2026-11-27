@@ -19,6 +19,7 @@
     "portfolio_required": "Sélectionnez un portefeuille. Seuls les administrateurs d’équipe peuvent créer des projets.",
     "no_portfolios": "Aucun portefeuille pour le moment",
     "no_projects": "Aucun projet à afficher",
+    "portfolio_projects": "Projets de {name}",
     "not_found": "Cette page n’existe pas ou a été supprimée.",
     "archived": "Archivé",
     "archive_hint": "Une équipe archivée est masquée dans la navigation. L’accès à ses projets est conservé.",
