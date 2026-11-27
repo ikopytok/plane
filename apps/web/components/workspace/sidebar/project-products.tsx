@@ -5,7 +5,7 @@
  */
 
 import { observer } from "mobx-react";
-import { useParams, usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import useSWR from "swr";
 import { Icon } from "@makeplane/propel/components/icon";
@@ -19,6 +19,9 @@ import { cn } from "@plane/utils";
 import { KindIcon } from "@/components/products/kind-icon";
 // services
 import { ProductService } from "@/services/product.service";
+// local imports
+import type { TTreeSelection } from "./tree-selection";
+import { treeLevelClass, useTreeSelection } from "./tree-selection";
 
 const productService = new ProductService();
 
@@ -44,12 +47,12 @@ export function ProjectProductsToggle({ projectName, isOpen, onToggle }: TToggle
   );
 }
 
-type TListProps = { projectId: string };
+type TListProps = { projectId: string; parent: Omit<TTreeSelection, "href" | "isPrefix"> };
 
 /** Products of one project, loaded when the list is first opened. Each one links to its work item page. */
-export const ProjectProducts = observer(function ProjectProducts({ projectId }: TListProps) {
+export const ProjectProducts = observer(function ProjectProducts({ projectId, parent }: TListProps) {
   const { workspaceSlug } = useParams();
-  const pathname = usePathname();
+  const { select, isInChain, isLast } = useTreeSelection();
   const { t } = useTranslation();
   const slug = workspaceSlug?.toString() ?? "";
   const { data: products, isLoading } = useSWR(slug ? `SIDEBAR_PROJECT_PRODUCTS_${slug}_${projectId}` : null, () =>
@@ -65,11 +68,15 @@ export const ProjectProducts = observer(function ProjectProducts({ projectId }: 
         return (
           <ListItem key={product.id} density="comfortable">
             <ListItemLink
-              render={<Link href={href} />}
-              aria-current={pathname.replace(/\/?$/, "/") === href ? "page" : undefined}
+              render={
+                <Link href={href} onClick={() => select({ ...parent, projectId, productId: product.id, href })} />
+              }
+              aria-current={isLast("product", product.id) ? "page" : undefined}
             >
               <KindIcon kind="product" />
-              <ListItemLabel>{product.name}</ListItemLabel>
+              <ListItemLabel render={<span className={treeLevelClass("product", isInChain("product", product.id))} />}>
+                {product.name}
+              </ListItemLabel>
             </ListItemLink>
           </ListItem>
         );
